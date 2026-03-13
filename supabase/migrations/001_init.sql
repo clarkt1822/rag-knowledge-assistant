@@ -23,7 +23,7 @@ create table if not exists documents (
 create table if not exists chunks (
   id uuid primary key default gen_random_uuid(),
   document_id uuid not null references documents(id) on delete cascade,
-  chunk_index int not null,
+  chunk_index int not null check (chunk_index >= 0),
   content text not null,
   char_count int not null check (char_count >= 0),
   metadata jsonb not null default '{}'::jsonb,
@@ -49,9 +49,6 @@ create table if not exists query_logs (
   trace jsonb,
   created_at timestamptz not null default now()
 );
-
-create index if not exists chunks_document_id_idx
-  on chunks(document_id);
 
 create index if not exists documents_source_idx
   on documents(source);
