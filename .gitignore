@@ -13,6 +13,9 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
+.envrc
+.direnv/
 
 # logs
 *.log
@@ -46,3 +49,4 @@ temp/
 
 # Supabase local state
 .supabase/
+supabase/.temp/
