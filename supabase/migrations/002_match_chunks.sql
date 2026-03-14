@@ -1,4 +1,4 @@
-create or replace function match_chunks (
+create or replace function public.match_chunks (
   query_embedding vector(1536),
   match_count int default 5
 )
@@ -23,11 +23,10 @@ as $$
   from embeddings e
   join chunks c on c.id = e.chunk_id
   join documents d on d.id = c.document_id
-  where e.embedding is not null
-    and match_count > 0
+  where match_count > 0
   order by e.embedding <=> query_embedding
   limit match_count;
 $$;
 
-comment on function match_chunks(vector(1536), int) is
+comment on function public.match_chunks(vector(1536), int) is
 'Returns the most similar chunks for a query embedding using cosine distance.';
