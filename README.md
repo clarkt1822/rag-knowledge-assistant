@@ -1,92 +1,213 @@
 # RAG Knowledge Assistant
 
-A retrieval-augmented generation (RAG) system built with Next.js, Supabase (Postgres + pgvector), and OpenAI.
+A grounded, inspectable, and measurable Retrieval-Augmented Generation (RAG) system built with modern, production-relevant tooling.
 
-The goal of this project is to build a grounded, inspectable, and measurable RAG architecture with strong engineering fundamentals instead of prompt-only experimentation.
+---
 
-This repository focuses on building the full pipeline:
+## 🚀 Overview
 
-document ingestion → chunking → embeddings → vector retrieval → answer generation → evaluation.
+RAG Knowledge Assistant is a general-purpose RAG architecture designed to:
 
-## Project Status
+* Ingest arbitrary documents
+* Chunk and embed them into vector space
+* Store embeddings using pgvector (Supabase)
+* Retrieve relevant context for grounded AI responses
 
-🚧 Work in progress.
+The system is intentionally:
 
-The repository currently contains the infrastructure and database foundations for the system.  
-Application logic and ingestion pipelines are being implemented next.
+* **Simple** → easy to understand and debug
+* **Inspectable** → no hidden magic or opaque pipelines
+* **Composable** → can be adapted to any domain later
 
-This project is being built incrementally to prioritize:
+---
 
-- clear architecture
-- reproducibility
-- inspectable retrieval behavior
-- measurable evaluation
+## 🧠 Architecture
 
-## Architecture (High Level)
+```
+Document
+  ↓
+Chunking (deterministic, overlap-aware)
+  ↓
+Embeddings (OpenAI)
+  ↓
+Vector Storage (Supabase pgvector)
+  ↓
+Similarity Retrieval (RPC)
+  ↓
+LLM Response (grounded with sources)
+```
 
-The system is designed around a standard RAG pipeline:
+---
 
-documents  
-↓  
-chunking  
-↓  
-embeddings (OpenAI)  
-↓  
-pgvector similarity search  
-↓  
-retrieval  
-↓  
-LLM answer generation  
-↓  
-citations + logging  
+## 🛠 Tech Stack
 
-The vector search layer is implemented using **Postgres + pgvector** inside Supabase.
+* **Frontend / API:** Next.js (App Router)
+* **Database:** Supabase (Postgres + pgvector)
+* **Embeddings:** OpenAI
+* **Vector Search:** cosine similarity via pgvector
 
-## Tech Stack
+---
 
-- Next.js
-- Supabase (Postgres)
-- pgvector
-- OpenAI API
+## 📦 Core Features
 
-## Environment Setup
+### 1. Document Ingestion
 
-Copy `.env.example` to `.env.local` for local development.
+* Accepts raw text documents
+* Splits into deterministic chunks
+* Stores document + chunk metadata
 
-Public browser-safe variables:
+### 2. Embedding Pipeline
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+* Batch embedding generation
+* Cost-aware design
+* Stored in `vector(1536)` format
 
-Server-only secrets:
+### 3. Vector Storage
 
-- `OPENAI_API_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+* Uses pgvector inside Supabase
+* Indexed with HNSW for fast retrieval
 
-Never commit `.env.local` or real credentials.
+### 4. Retrieval
 
-## Planned System Features
+* RPC function: `match_chunks`
+* Returns:
 
-- document ingestion pipeline
-- document chunking
-- embedding generation
-- vector similarity retrieval
-- answer generation with citations
-- query logging
-- debugging and inspection tools
-- evaluation framework for retrieval quality
+  * content
+  * similarity score
+  * source metadata
 
-## Development Approach
+### 5. Grounded Responses (planned)
 
-This project is intentionally built step-by-step with an emphasis on:
+* Responses will include retrieved context
+* Supports “I don’t know” fallback when retrieval is weak
 
-- database-first architecture
-- deterministic retrieval
-- measurable improvements
-- minimal abstraction layers
+---
 
-The goal is to understand how RAG systems work internally rather than relying on heavy frameworks.
+## 🔐 Design Principles
 
-## License
+* **Server-side only retrieval logic**
+* **No OpenAI calls in client components**
+* **Strict separation of browser vs server environments**
+* **No secret leakage to the client**
+* **Minimal, inspectable code over abstraction-heavy design**
+
+---
+
+## ⚙️ Project Structure
+
+```
+/apps
+  /web
+    /app
+      /api
+        /ingest
+    /lib
+      chunking.ts
+      supabase-browser.ts
+      supabase-server.ts
+
+/supabase
+  /migrations
+
+/docs
+/eval
+```
+
+---
+
+## 🧪 Current Status
+
+* ✅ Database schema (documents, chunks, embeddings, query_logs)
+* ✅ pgvector + HNSW index
+* ✅ Chunking system
+* ✅ Ingestion API (document → chunks → embeddings)
+* ⏳ Retrieval + query pipeline (next)
+* ⏳ Response generation with sources
+
+---
+
+## 🔄 Example Ingestion Flow
+
+```
+POST /api/ingest
+
+{
+  "password": "***",
+  "title": "Example Document",
+  "source": "manual",
+  "text": "Your raw document text..."
+}
+```
+
+Response:
+
+```
+{
+  "ok": true,
+  "document_id": "uuid",
+  "chunks": 12,
+  "latency_ms": 850
+}
+```
+
+---
+
+## 🧠 Why This Project Exists
+
+Most RAG examples are either:
+
+* over-simplified (toy demos)
+* or over-engineered (hard to follow)
+
+This project aims to sit in the middle:
+
+→ **real enough to matter**
+→ **simple enough to understand**
+
+---
+
+## 📈 Future Improvements
+
+* Query + retrieval API
+* Source-cited responses
+* Evaluation pipeline (precision / recall)
+* Streaming responses
+* UI for document upload + querying
+
+---
+
+## 🧑‍💻 Getting Started
+
+1. Clone the repo
+2. Configure environment variables
+3. Run:
+
+```
+cd apps/web
+npm install
+npm run dev
+```
+
+4. Use `/api/ingest` to add documents
+
+---
+
+## 🧭 Build Philosophy
+
+This project is being built in public with a focus on:
+
+* understanding systems deeply
+* avoiding unnecessary abstraction
+* validating each step before moving forward
+
+---
+
+## 📬 Notes
+
+This is an evolving system. The goal is not perfection — it’s clarity, correctness, and steady progress.
+
+---
+
+## 🪪 License
 
 MIT
