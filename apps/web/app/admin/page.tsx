@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type IngestResponse = {
   ok?: boolean;
   document_id?: string;
   chunks?: number;
-  latency?: number;
+  latency_ms?: number;
   error?: string;
 };
 
@@ -24,8 +24,10 @@ export default function AdminPage() {
   const [title, setTitle] = useState("");
   const [source, setSource] = useState("");
   const [text, setText] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   async function ingest() {
     if (isSubmitting) {
@@ -49,8 +51,13 @@ export default function AdminPage() {
       return;
     }
 
-    if (!normalizedText) {
-      setStatus("Error: text is required.");
+    if (!normalizedText && !file) {
+      setStatus("Error: provide text or upload a file.");
+      return;
+    }
+
+    if (normalizedText && file) {
+      setStatus("Error: provide either text or a file, not both.");
       return;
     }
 
@@ -58,17 +65,19 @@ export default function AdminPage() {
     setStatus("Ingesting...");
 
     try {
+      const formData = new FormData();
+      formData.set("password", normalizedPassword);
+      formData.set("title", normalizedTitle);
+      formData.set("source", normalizedSource);
+      formData.set("text", normalizedText);
+
+      if (file) {
+        formData.set("file", file);
+      }
+
       const res = await fetch("/api/ingest", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: normalizedPassword,
-          title: normalizedTitle,
-          source: normalizedSource || null,
-          text: normalizedText,
-        }),
+        body: formData,
       });
 
       let data: IngestResponse = {};
@@ -89,12 +98,16 @@ export default function AdminPage() {
       }
 
       setStatus(
-        `Success: document_id=${data.document_id}, chunks=${data.chunks}, latency=${data.latency}ms`
+        `Success: document_id=${data.document_id}, chunks=${data.chunks}, latency=${data.latency_ms}ms`
       );
 
       setTitle("");
       setSource("");
       setText("");
+      setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
       console.error(error);
       setStatus("Error: unexpected network or server failure.");
@@ -107,6 +120,7 @@ export default function AdminPage() {
     <main style={{ maxWidth: 800, margin: "40px auto", padding: "0 16px" }}>
       <h1>Admin Ingestion</h1>
       <p>Load a document into the RAG system.</p>
+      <p>Provide manual text or upload a PDF, DOCX, or TXT file.</p>
 
       <form
         onSubmit={(event) => {
@@ -152,13 +166,26 @@ export default function AdminPage() {
         </label>
 
         <label>
+          <div style={{ marginBottom: 6 }}>File (optional)</div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+            onChange={(e) => {
+              setFile(e.target.files?.[0] ?? null);
+            }}
+            disabled={isSubmitting}
+            style={fieldStyle}
+          />
+        </label>
+
+        <label>
           <div style={{ marginBottom: 6 }}>Text</div>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={14}
             disabled={isSubmitting}
-            required
             style={fieldStyle}
           />
         </label>
