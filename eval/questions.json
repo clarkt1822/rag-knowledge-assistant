@@ -1,0 +1,137 @@
+[
+  {
+    "id": "q1_overview_purpose",
+    "question": "What is the main purpose of the RAG Knowledge Assistant project?",
+    "expected_answer_contains": [
+      "RAG",
+      "grounded",
+      "inspectable",
+      "retrieval"
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "README"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q2_architecture_flow",
+    "question": "What are the main steps in the project's RAG pipeline from document ingestion to answer generation?",
+    "expected_answer_contains": [
+      "chunk",
+      "embed",
+      "Supabase",
+      "retrieve",
+      "response"
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "README"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q3_vector_store",
+    "question": "What database technology is used for vector storage and similarity search in this project?",
+    "expected_answer_contains": [
+      "Supabase",
+      "pgvector",
+      "cosine"
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "Setup"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q4_design_principles",
+    "question": "What are two design principles called out for this project?",
+    "expected_answer_contains": [
+      "server-side",
+      "no secret leakage"
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "README"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q5_setup_secrets",
+    "question": "Where should local secrets be stored, and which Supabase key is safe for browser use?",
+    "expected_answer_contains": [
+      ".env.local",
+      "anon key",
+      "browser"
+    ],
+    "expected_retrieved_titles_contains": [
+      "Setup"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q6_ingest_examples",
+    "question": "What inputs does the ingestion flow example show for POST /api/ingest?",
+    "expected_answer_contains": [
+      "password",
+      "title",
+      "source",
+      "text"
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "README"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q7_default_topk_behavior",
+    "question": "What is the default topK value used by the chat route when none is provided?",
+    "expected_answer_contains": [
+      "5"
+    ],
+    "expected_retrieved_titles_contains": [
+      "route",
+      "chat"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q8_trace_mode_shape",
+    "question": "When trace mode is enabled on /api/chat, what trace fields are returned?",
+    "expected_answer_contains": [
+      "question",
+      "topK",
+      "retrieved_count"
+    ],
+    "expected_retrieved_titles_contains": [
+      "route",
+      "chat"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q9_abstain_response",
+    "question": "What exact fallback should be returned when the answer is not supported by the provided documents?",
+    "expected_answer_contains": [
+      "I don't know based on the provided documents."
+    ],
+    "expected_retrieved_titles_contains": [
+      "rag"
+    ],
+    "should_abstain": false
+  },
+  {
+    "id": "q10_unknown_founder",
+    "question": "Who founded this project and what city do they live in?",
+    "expected_answer_contains": [
+      "I don't know based on the provided documents."
+    ],
+    "expected_retrieved_titles_contains": [
+      "RAG",
+      "Setup"
+    ],
+    "should_abstain": true
+  }
+]
