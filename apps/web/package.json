@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "eval": "tsx scripts/eval_rag.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.2",

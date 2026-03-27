@@ -13,7 +13,7 @@ export default function Home() {
         <div className="absolute bottom-[-8rem] left-1/2 h-72 w-[32rem] -translate-x-1/2 rounded-full bg-white/60 blur-3xl dark:bg-white/[0.03]" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-10">
+      <div className="mx-auto w-full max-w-6xl px-6 py-16">
         <section className="max-w-3xl space-y-4">
           <div className="inline-flex rounded-full border border-slate-300/70 bg-white/75 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-slate-600 shadow-[0_1px_0_rgba(255,255,255,0.7)_inset] backdrop-blur-md dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
             Grounded Answers
